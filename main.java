@@ -49,7 +49,7 @@ public class main {
         }
 
         maxLen = (maxLen / 2) + (maxLen % 2); // 计算半长度
-        System.out.println("x==="+x+", y===="+y+", N===="+maxLen);
+//        System.out.println("x==="+x+", y===="+y+", N===="+maxLen);
         // x = a + 2^N * b, y = c + 2^N * d
         BigInteger b = x.shiftRight(maxLen);
         BigInteger a = x.subtract(b.shiftLeft(maxLen));
