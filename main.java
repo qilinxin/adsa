@@ -1,5 +1,3 @@
-package main.java;
-
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
@@ -29,7 +27,7 @@ public class main {
         // 使用 Karatsuba 算法进行乘法
         BigInteger product = Karatsuba(bigInteger1, bigInteger2);
 
-        // yanjiushengxuyao chufa
+        // undergraduate
         BigInteger quotient = bigInteger1.divide(bigInteger2);
 
 
