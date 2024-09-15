@@ -12,7 +12,7 @@ class TreeNode {
     }
 }
 
-public class Main {
+public class main {
 
     // 旋转树节点以平衡树
     static void rotateTree(TreeNode[] nodeRef, int rotatingDirection) {
