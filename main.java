@@ -51,15 +51,14 @@ public class main {
         }
     }
 
-    // 更新树节点的值和平衡因子
     static int updateTreeNode(TreeNode[] nodeRef, int value, int operationType) {
         TreeNode node = nodeRef[0];
 
         if (node == null) {
             if (operationType == 0) {
-                return 0;
+                return 0; // 删除操作中找不到节点，直接返回
             } else {
-                nodeRef[0] = new TreeNode(value);
+                nodeRef[0] = new TreeNode(value); // 插入新节点
                 return 1;
             }
         } else {
@@ -68,8 +67,9 @@ public class main {
 
             if (value == node.value) {
                 if (operationType == 1) {
-                    return 0;
+                    return 0; // 插入操作时发现值已经存在
                 } else {
+                    // 处理删除操作
                     if (node.subTree[1] == null) {
                         nodeRef[0] = node.subTree[0];
                         return -1;
@@ -91,13 +91,14 @@ public class main {
                 leftSubtreeIndex = (value < node.value) ? 0 : 1;
                 tmpDeltaFactor = (value < node.value) ? 1 : -1;
 
-                // 确保子节点存在，避免NullPointerException
+                // 这里我们确保递归调用前，子节点已经被初始化
                 if (node.subTree[leftSubtreeIndex] == null && operationType == 1) {
                     node.subTree[leftSubtreeIndex] = new TreeNode(value);
                     return 1;
                 }
 
-                if (node.subTree[leftSubtreeIndex] != null) {  // 在此增加 null 检查
+                // 确保 node.subTree[leftSubtreeIndex] 不为 null
+                if (node.subTree[leftSubtreeIndex] != null) {
                     balanceChange = updateTreeNode(new TreeNode[]{node.subTree[leftSubtreeIndex]}, value, operationType);
                 }
             }
@@ -125,16 +126,24 @@ public class main {
 
                 if (shouldPerformRotation != 0) {
                     int balanceFactorInChild = node.subTree[leftSubtreeToRotate].balanceFactor;
-                    if (node.subTree[leftSubtreeToRotate].balanceFactor * rotationFactor < 0) {
-                        rotateTree(new TreeNode[]{node.subTree[leftSubtreeToRotate]}, 1 - rightSubtreeToRotate);
+
+                    // 再次确保子节点在旋转前已经存在
+                    if (node.subTree[leftSubtreeToRotate] != null) {
+                        if (node.subTree[leftSubtreeToRotate].balanceFactor * rotationFactor < 0) {
+                            rotateTree(new TreeNode[]{node.subTree[leftSubtreeToRotate]}, 1 - rightSubtreeToRotate);
+                        }
+                        rotateTree(nodeRef, rightSubtreeToRotate);
+                    } else {
+                        throw new RuntimeException("Attempted to rotate on a null child during balance adjustment.");
                     }
-                    rotateTree(nodeRef, rightSubtreeToRotate);
+
                     if (balanceChange < 0 && balanceFactorInChild != 0) {
                         return -1;
                     } else {
                         return 0;
                     }
                 }
+
                 if (balanceChange > 0 && tmpBalanceFactor == 0) {
                     return 1;
                 } else if (balanceChange < 0 && tmpBalanceFactor != 0) {
@@ -147,6 +156,7 @@ public class main {
             }
         }
     }
+
 
     // 前序遍历树
     static void preOrder(TreeNode tree, StringBuilder output) {
