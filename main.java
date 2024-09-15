@@ -392,15 +392,15 @@ public class main {
     }
 
     public static void main(String[] args) {
-//        Scanner scanner = new Scanner(System.in);
-//        operator(scanner.nextLine());
-//
-//        scanner.close();
+        Scanner scanner = new Scanner(System.in);
+        operator(scanner.nextLine());
 
-        String input = "A88 D77 D95 A78 A71 A2 D9 A2 A60 D80 A85 A65 D11 A30 D8 A68 D87 A28 A88 A96 D29 D26 D88 D47 D68 A65 A86 A100 A61 D7 D76 D21 D24 A40 D94 A84 A16 D28 A45 A60 D34 D14 A68 A64 A74 A62 D99 D2 D34 D32 D60 D52 D19 A95 A28 A91 D24 A34 D22 D77 D7 D78 A3 A100 D95 D53 D82 D64 A55 A46 A17 A70 D4 A25 A75 D71 A30 D50 D44 A11 D39 A47 D77 A71 D1 A98 D51 A63 D15 A15 D75 A4 D14 D77 A9 D84 D70 A5 D67 A22 POST";
-        operator(input);
-//                        3 5 4 15 11 9 22 17 28 25 16 34 45 40 47 55 46 30 62 65 63 74 71 68 91 86 98 100 96 85 61
-//        Expected Output: 3 5 4 15 11 9 22 17 28 25 16 34 40 46 55 47 63 62 61 45 30 71 68 85 74 91 98 100 96 86 65
+        scanner.close();
+//
+//        String input = "A88 D77 D95 A78 A71 A2 D9 A2 A60 D80 A85 A65 D11 A30 D8 A68 D87 A28 A88 A96 D29 D26 D88 D47 D68 A65 A86 A100 A61 D7 D76 D21 D24 A40 D94 A84 A16 D28 A45 A60 D34 D14 A68 A64 A74 A62 D99 D2 D34 D32 D60 D52 D19 A95 A28 A91 D24 A34 D22 D77 D7 D78 A3 A100 D95 D53 D82 D64 A55 A46 A17 A70 D4 A25 A75 D71 A30 D50 D44 A11 D39 A47 D77 A71 D1 A98 D51 A63 D15 A15 D75 A4 D14 D77 A9 D84 D70 A5 D67 A22 POST";
+//        operator(input);
+////                        3 5 4 15 11 9 22 17 28 25 16 34 45 40 47 55 46 30 62 65 63 74 71 68 91 86 98 100 96 85 61
+////        Expected Output: 3 5 4 15 11 9 22 17 28 25 16 34 40 46 55 47 63 62 61 45 30 71 68 85 74 91 98 100 96 86 65
 
     }
 
@@ -418,9 +418,9 @@ public class main {
             } else if (operation.charAt(0) == 'D') {
                 tree.root = tree.removeNode(tree.root, value);
             }
-            System.out.println("Current operation: " + operation);
-            System.out.println("Tree status after operation: ");
-            System.out.println(tree);
+//            System.out.println("Current operation: " + operation);
+//            System.out.println("Tree status after operation: ");
+//            System.out.println(tree);
         }
 
         String traversal = inputs[inputs.length - 1];
