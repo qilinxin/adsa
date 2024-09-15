@@ -63,7 +63,7 @@ public class main {
                 return 1;
             }
         } else {
-            int leftSubtreeIndex, balanceChange, tmpDeltaFactor;
+            int leftSubtreeIndex, balanceChange = 0, tmpDeltaFactor;
             TreeNode nextTreeNode;
 
             if (value == node.value) {
@@ -92,16 +92,14 @@ public class main {
                 tmpDeltaFactor = (value < node.value) ? 1 : -1;
 
                 // 确保子节点存在，避免NullPointerException
-                if (node.subTree[leftSubtreeIndex] == null) {
-                    if (operationType == 1) { // 如果是插入操作
-                        node.subTree[leftSubtreeIndex] = new TreeNode(value);
-                        return 1;
-                    } else {
-                        return 0;
-                    }
+                if (node.subTree[leftSubtreeIndex] == null && operationType == 1) {
+                    node.subTree[leftSubtreeIndex] = new TreeNode(value);
+                    return 1;
                 }
 
-                balanceChange = updateTreeNode(new TreeNode[]{node.subTree[leftSubtreeIndex]}, value, operationType);
+                if (node.subTree[leftSubtreeIndex] != null) {  // 在此增加 null 检查
+                    balanceChange = updateTreeNode(new TreeNode[]{node.subTree[leftSubtreeIndex]}, value, operationType);
+                }
             }
 
             if (balanceChange != 0) {
