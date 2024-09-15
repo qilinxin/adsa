@@ -92,10 +92,15 @@ public class main {
                 tmpDeltaFactor = (value < node.value) ? 1 : -1;
 
                 // 确保子节点存在，避免NullPointerException
-                if (node.subTree[leftSubtreeIndex] == null && operationType == 1) {
-                    node.subTree[leftSubtreeIndex] = new TreeNode(value);
-                    return 1;
+                if (node.subTree[leftSubtreeIndex] == null) {
+                    if (operationType == 1) { // 如果是插入操作
+                        node.subTree[leftSubtreeIndex] = new TreeNode(value);
+                        return 1;
+                    } else {
+                        return 0;
+                    }
                 }
+
                 balanceChange = updateTreeNode(new TreeNode[]{node.subTree[leftSubtreeIndex]}, value, operationType);
             }
 
