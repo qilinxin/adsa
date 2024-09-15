@@ -12,7 +12,7 @@ class TreeNode {
     }
 }
 
-public class main {
+public class Main {
 
     // 旋转树节点以平衡树
     static void rotateTree(TreeNode[] nodeRef, int rotatingDirection) {
@@ -82,13 +82,19 @@ public class main {
                         node.value = nextTreeNode.value;
                         leftSubtreeIndex = 0;
                         tmpDeltaFactor = 1;
-                        balanceChange = updateTreeNode(node.subTree, nextTreeNode.value, operationType);
+                        balanceChange = updateTreeNode(new TreeNode[]{node.subTree[leftSubtreeIndex]}, nextTreeNode.value, operationType);
                     }
                 }
             } else {
                 leftSubtreeIndex = (value < node.value) ? 0 : 1;
                 tmpDeltaFactor = (value < node.value) ? 1 : -1;
-                balanceChange = updateTreeNode(node.subTree, value, operationType);
+
+                // 确保子节点存在，避免NullPointerException
+                if (node.subTree[leftSubtreeIndex] == null) {
+                    node.subTree[leftSubtreeIndex] = new TreeNode(value);
+                    return 1;
+                }
+                balanceChange = updateTreeNode(new TreeNode[]{node.subTree[leftSubtreeIndex]}, value, operationType);
             }
 
             if (balanceChange != 0) {
@@ -212,11 +218,5 @@ public class main {
         TreeNode[] root = new TreeNode[]{null};
         Vector<String> inputData = readInputData();
         processInputData(inputData, root);
-
-
-//        Scanner scanner = new Scanner(System.in);
-//        operator(scanner.nextLine());
-//
-//        scanner.close();
     }
 }
