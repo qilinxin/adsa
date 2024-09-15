@@ -9,6 +9,8 @@ class TreeNode {
     TreeNode(int value) {
         this.value = value;
         this.balanceFactor = 0;
+        this.subTree[0] = null;
+        this.subTree[1] = null;
     }
 }
 
@@ -90,7 +92,7 @@ public class main {
                 tmpDeltaFactor = (value < node.value) ? 1 : -1;
 
                 // 确保子节点存在，避免NullPointerException
-                if (node.subTree[leftSubtreeIndex] == null) {
+                if (node.subTree[leftSubtreeIndex] == null && operationType == 1) {
                     node.subTree[leftSubtreeIndex] = new TreeNode(value);
                     return 1;
                 }
