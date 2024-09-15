@@ -1,67 +1,261 @@
-import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Scanner;
 
-public class main {
+class AVLTree {
+    static class Node {
+        int key;
+        int height;
+        Node left, right;
 
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-
-        String input = scanner.nextLine();
-        scanner.close();
-
-        // 解析输入
-        List<String> parts = Arrays.asList(input.split(" "));
-        String first = parts.get(0);
-        String second = parts.get(1);
-        int base = Integer.parseInt(parts.get(2));
-
-        // 转换为大整数
-        BigInteger bigInteger1 = new BigInteger(first, base);
-        BigInteger bigInteger2 = new BigInteger(second, base);
-
-        // 使用学校方法进行加法
-        BigInteger sum = bigInteger1.add(bigInteger2);
-
-        // 使用 Karatsuba 算法进行乘法
-        BigInteger product = Karatsuba(bigInteger1, bigInteger2);
-
-        // undergraduate
-        BigInteger quotient = bigInteger1.divide(bigInteger2);
-
-
-        // 以指定进制格式化输出
-        System.out.println(sum.toString(base) + " " + product.toString(base) + " " + quotient.toString(base));
+        Node(int d) {
+            key = d;
+            height = 1;
+        }
     }
 
-    /**
-     *  Karatsuba 算法实现
-     * @param x
-     * @param y
-     * @return
-     */
-    private static BigInteger Karatsuba(BigInteger x, BigInteger y) {
-        int maxLen = Math.max(x.bitLength(), y.bitLength());
+    Node root;
 
-        if (maxLen <= 10) { // 阈值可以调整，这里为了简单起见用较小的值
-            return x.multiply(y);
+    // Utility function to get height of the tree
+    int height(Node N) {
+        if (N == null)
+            return 0;
+        return N.height;
+    }
+
+    // Utility function to get maximum of two integers
+    int max(int a, int b) {
+        return Math.max(a, b);
+    }
+
+    // Right rotate subtree rooted with y
+    Node rightRotate(Node y) {
+        Node x = y.left;
+        Node T2 = x.right;
+
+        // Perform rotation
+        x.right = y;
+        y.left = T2;
+
+        // Update heights
+        y.height = max(height(y.left), height(y.right)) + 1;
+        x.height = max(height(x.left), height(x.right)) + 1;
+
+        // Return new root
+        return x;
+    }
+
+    // Left rotate subtree rooted with x
+    Node leftRotate(Node x) {
+        Node y = x.right;
+        Node T2 = y.left;
+
+        // Perform rotation
+        y.left = x;
+        x.right = T2;
+
+        // Update heights
+        x.height = max(height(x.left), height(x.right)) + 1;
+        y.height = max(height(y.left), height(y.right)) + 1;
+
+        // Return new root
+        return y;
+    }
+
+    // Get balance factor of node N
+    int getBalance(Node N) {
+        if (N == null)
+            return 0;
+        return height(N.left) - height(N.right);
+    }
+
+    Node insert(Node node, int key) {
+        /* 1. Perform the normal BST insertion */
+        if (node == null)
+            return (new Node(key));
+
+        if (key < node.key)
+            node.left = insert(node.left, key);
+        else if (key > node.key)
+            node.right = insert(node.right, key);
+        else // Duplicate keys are not allowed
+            return node;
+
+        /* 2. Update height of this ancestor node */
+        node.height = 1 + max(height(node.left), height(node.right));
+
+        /* 3. Get the balance factor of this ancestor node to check whether this node became unbalanced */
+        int balance = getBalance(node);
+
+        // If this node becomes unbalanced, then there are 4 cases
+
+        // Left Left Case
+        if (balance > 1 && key < node.left.key)
+            return rightRotate(node);
+
+        // Right Right Case
+        if (balance < -1 && key > node.right.key)
+            return leftRotate(node);
+
+        // Left Right Case
+        if (balance > 1 && key > node.left.key) {
+            node.left = leftRotate(node.left);
+            return rightRotate(node);
         }
 
-        maxLen = (maxLen / 2) + (maxLen % 2); // 计算半长度
-//        System.out.println("x==="+x+", y===="+y+", N===="+maxLen);
-        // x = a + 2^N * b, y = c + 2^N * d
-        BigInteger b = x.shiftRight(maxLen);
-        BigInteger a = x.subtract(b.shiftLeft(maxLen));
-        BigInteger d = y.shiftRight(maxLen);
-        BigInteger c = y.subtract(d.shiftLeft(maxLen));
+        // Right Left Case
+        if (balance < -1 && key < node.right.key) {
+            node.right = rightRotate(node.right);
+            return leftRotate(node);
+        }
 
-        // 计算 ac, bd 和 (a+b)(c+d)
-        BigInteger ac = Karatsuba(a, c);
-        BigInteger bd = Karatsuba(b, d);
-        BigInteger abcd = Karatsuba(a.add(b), c.add(d));
+        /* return the (unchanged) node pointer */
+        return node;
+    }
 
-        // 组合结果
-        return ac.add(abcd.subtract(ac).subtract(bd).shiftLeft(maxLen)).add(bd.shiftLeft(2 * maxLen));
+    Node minValueNode(Node node) {
+        Node current = node;
+
+        /* loop down to find the leftmost leaf */
+        while (current.left != null)
+            current = current.left;
+
+        return current;
+    }
+
+    Node deleteNode(Node root, int key) {
+        // STEP 1: PERFORM STANDARD BST DELETE
+
+        if (root == null)
+            return root;
+
+        // If the key to be deleted is smaller than the root's key, then it lies in left subtree
+        if (key < root.key)
+            root.left = deleteNode(root.left, key);
+
+            // If the key to be deleted is greater than the root's key, then it lies in right subtree
+        else if (key > root.key)
+            root.right = deleteNode(root.right, key);
+
+            // if key is same as root's key, then this is the node to be deleted
+        else {
+            // node with only one child or no child
+            if ((root.left == null) || (root.right == null)) {
+                Node temp = null;
+                if (temp == root.left)
+                    temp = root.right;
+                else
+                    temp = root.left;
+
+                // No child case
+                if (temp == null) {
+                    temp = root;
+                    root = null;
+                } else // One child case
+                    root = temp; // Copy the contents of the non-empty child
+            } else {
+                // node with two children: Get the inorder successor (smallest in the right subtree)
+                Node temp = minValueNode(root.right);
+
+                // Copy the inorder successor's data to this node
+                root.key = temp.key;
+
+                // Delete the inorder successor
+                root.right = deleteNode(root.right, temp.key);
+            }
+        }
+
+        // If the tree had only one node then return
+        if (root == null)
+            return root;
+
+        // STEP 2: UPDATE HEIGHT OF THE CURRENT NODE
+        root.height = max(height(root.left), height(root.right)) + 1;
+
+        // STEP 3: GET THE BALANCE FACTOR OF THIS NODE (to check whether this node became unbalanced)
+        int balance = getBalance(root);
+
+        // If this node becomes unbalanced, then there are 4 cases
+
+        // Left Left Case
+        if (balance > 1 && getBalance(root.left) >= 0)
+            return rightRotate(root);
+
+        // Left Right Case
+        if (balance > 1 && getBalance(root.left) < 0) {
+            root.left = leftRotate(root.left);
+            return rightRotate(root);
+        }
+
+        // Right Right Case
+        if (balance < -1 && getBalance(root.right) <= 0)
+            return leftRotate(root);
+
+        // Right Left Case
+        if (balance < -1 && getBalance(root.right) > 0) {
+            root.right = rightRotate(root.right);
+            return leftRotate(root);
+        }
+
+        return root;
+    }
+
+    // A utility function to print preorder traversal of the tree.
+    // The function also prints height of every node
+    void preOrder(Node node) {
+        if (node != null) {
+            System.out.print(node.key + " ");
+            preOrder(node.left);
+            preOrder(node.right);
+        }
+    }
+
+    void inOrder(Node node) {
+        if (node != null) {
+            inOrder(node.left);
+            System.out.print(node.key + " ");
+            inOrder(node.right);
+        }
+    }
+
+    void postOrder(Node node) {
+        if (node != null) {
+            postOrder(node.left);
+            postOrder(node.right);
+            System.out.print(node.key + " ");
+        }
+    }
+}
+
+public class main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        String[] inputs = scanner.nextLine().split(" ");
+        AVLTree tree = new AVLTree();
+
+        for (int i = 0; i < inputs.length - 1; i++) {
+            String operation = inputs[i];
+            int value = Integer.parseInt(operation.substring(1));
+
+            if (operation.charAt(0) == 'A') {
+                tree.root = tree.insert(tree.root, value);
+            } else if (operation.charAt(0) == 'D') {
+                tree.root = tree.deleteNode(tree.root, value);
+            }
+        }
+
+        String traversal = inputs[inputs.length - 1];
+        if (tree.root == null) {
+            System.out.println("EMPTY");
+        } else {
+            if (traversal.equals("PRE")) {
+                tree.preOrder(tree.root);
+            } else if (traversal.equals("IN")) {
+                tree.inOrder(tree.root);
+            } else if (traversal.equals("POST")) {
+                tree.postOrder(tree.root);
+            }
+            System.out.println(); // To ensure the output ends with a newline.
+        }
+
+        scanner.close();
     }
 }
