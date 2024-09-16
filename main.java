@@ -600,8 +600,8 @@ public class main {
             } else if (operation.charAt(0) == 'D') {
                 tree.remove(value);
             }
-            tree.postOrder(tree.root);
-            System.out.println();
+//            tree.postOrder(tree.root);
+//            System.out.println();
         }
 
         String traversal = inputs.get(inputs.size() - 1);
