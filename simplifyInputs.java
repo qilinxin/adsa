@@ -3,32 +3,23 @@ import java.util.*;
 public class simplifyInputs {
     public static void main(String[] args) {
         // 输入操作列表
-        String[] operations = {"A54", "A99", "D60", "A80", "A28", "D4", "D60", "D62", "A76", "A100",
-                "A34", "A31", "A29", "A31", "D57", "D59", "D95", "D90", "A46", "A91",
-                "D44", "D81", "A56", "A2", "A84", "A50", "D59", "A47", "D22", "A49",
-                "A74", "A59", "A15", "D17", "A44", "D77", "D77", "D90", "A94", "A70",
-                "D83", "D84", "A21", "D82", "D5", "D1", "D27", "D33", "A60", "A55",
-                "A38", "A36", "A57", "D14", "A50", "A78", "D84", "D30", "A92", "A48",
-                "D94", "A3", "D3", "A7", "D34", "A96", "D37", "D68", "A58", "A18",
-                "A26", "A60", "D69", "D33", "A66", "D17", "D64", "D16", "D10", "A14",
-                "A78", "A8", "A70", "A31", "D40", "D82", "D71", "A14", "A49", "D64",
-                "A34", "D99", "A35", "A67", "A14", "D43", "D55", "A10", "D66", "A94",
-                "POST"};
+        List<String> operations = Arrays.asList("D13 D60 D76 D12 A17 D98 A94 D70 D3 A23 A42 D45 A100 D50 A99 A22 A87 A4 A90 D88 A71 A20 D39 D83 A97 A56 D28 A9 D43 A19 D5 A11 A54 A73 D54 A9 A24 A58 D6 D80 A72 A47 A82 A12 A75 D77 D84 D86 A60 D64 D70 D70 A73 A71 A40 D94 D27 A63 D47 A42 A44 A27 A100 A6 D84 A19 D65 A75 A55 A63 A39 D99 A50 D98 A98 D100 D93 A91 A81 D59 D56 D29 D11 D45 D47 D55 D85 D7 D70 A13 A55 A25 D35 D65 A48 D55 A45 D29 A35 A15 IN".split(" "));
 
         // 记录集合，模拟插入和删除操作
         Set<Integer> set = new HashSet<>();
         List<String> optimizedOperations = new ArrayList<>();
 
         for (String operation : operations) {
-            if (operation.equals("POST")) {
+            System.out.println(operation);
+            char action = operation.charAt(0);
+            if (action == 'P' || action == 'I') {
                 optimizedOperations.add(operation);
                 break;
             }
-            char action = operation.charAt(0);
             int value = Integer.parseInt(operation.substring(1));
 
             if (action == 'A') {
-                if (!set.contains(value) && value > 80) {
+                if (!set.contains(value)) {
                     set.add(value);
                     optimizedOperations.add(operation);
                 }
@@ -38,6 +29,7 @@ public class simplifyInputs {
                     optimizedOperations.add(operation);
                 }
             }
+            System.out.println(optimizedOperations);
         }
 
         // 输出优化后的操作序列
