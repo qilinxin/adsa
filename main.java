@@ -418,82 +418,73 @@ class AVLTree<K extends Comparable<K>,V> {
         } else if (key.compareTo(node.key) > 0) {
             node.right = remove(node.right, key);
             resultNode = node;
-        } else /*if(key.compareTo(node.key) == 0)*/ {
-            // 删除右子树为空的情况
+        } else {
+            // 找到待删除的节点
+
+            // 处理只有右子树或没有子树的情况
             if (node.right == null) {
                 Node leftNode = node.left;
                 node.left = null;
                 size--;
                 resultNode = leftNode;
             }
-            // 删除左子树为空的情况
+            // 处理只有左子树的情况
             else if (node.left == null) {
                 Node rightNode = node.right;
                 node.right = null;
                 size--;
                 resultNode = rightNode;
             }
-            // 删除左子树、右子树均不为空的情况
+            // 处理有左子树和右子树的情况
             else {
-                // 1、删除后用后继节点替代该位置(后继节点即待删除节点右子树中的最小节点)
-                // 获得后继节点
-                Node successor = minimum(node.right);
-                // 删除后继节点，并让待删除节点的右子树成为后继节点的右子树
-                successor.right = remove(node.right, successor.key);
-                // 让待删除节点的左子树成为后继节点的左子树
-                successor.left = node.left;
-                // 将待删除节点的左、右子节点置为空
+                // 使用左子树的最大节点替代当前节点
+                Node predecessor = maximize(node.left);
+                predecessor.left = remove(node.left, predecessor.key);  // 删除左子树中的最大节点
+                predecessor.right = node.right;
+
+                // 将待删除节点的左右子节点置为空
                 node.left = node.right = null;
-                resultNode = successor;
-                /**
-                 // 2、删除后用前驱节点替代该位置(前驱节点即待删除节点左子树中的最大节点)
-                 // 获得前驱节点
-                 Node predecessor = maximize(node.left);
-                 // 删除前驱节点，并让待删除节点的左子树成为前驱节点的左子树
-                 predecessor.left = removeMax(node);
-                 // 让待删除节点的右子树成为前驱节点的右子树
-                 predecessor.right = node.right;
-                 // 将待删除节点的左、右子节点置为空
-                 node.left = node.right = null;
-                 return predecessor;
-                 */
+
+                resultNode = predecessor;
             }
         }
 
-        /**========== 维护平衡 Start ==========*/
+        // 维护平衡
         if (resultNode == null) {
             return null;
         }
 
-        //更新Height
+        // 更新高度
         resultNode.height = 1 + Math.max(getHeight(resultNode.left), getHeight(resultNode.right));
-        //计算平衡因子
+
+        // 计算平衡因子
         int balanceFactor = getBalanceFactor(resultNode);
-        //LL左孩子节点的左侧产生不平衡
+
+        // LL
         if (balanceFactor > 1 && getBalanceFactor(resultNode.left) >= 0) {
-            //右旋转操作
             return rightRotate(resultNode);
         }
-        //RR右孩子节点的右侧产生不平衡
+
+        // RR
         if (balanceFactor < -1 && getBalanceFactor(resultNode.right) <= 0) {
-            //左旋转操作
             return leftRotate(resultNode);
         }
-        //LR左孩子节点的右侧产生不平衡
+
+        // LR
         if (balanceFactor > 1 && getBalanceFactor(resultNode.left) < 0) {
             resultNode.left = leftRotate(resultNode.left);
-            //右旋转操作
             return rightRotate(resultNode);
         }
-        //RL右孩子节点的左侧产生不平衡
+
+        // RL
         if (balanceFactor < -1 && getBalanceFactor(resultNode.right) > 0) {
             resultNode.right = rightRotate(resultNode.right);
-            //右旋转操作
             return leftRotate(resultNode);
         }
-        /**========== 维护平衡 End ==========*/
+
         return resultNode;
     }
+
 
     public boolean contains(K key) {
         return getNode(root, key) != null;
@@ -594,9 +585,7 @@ public class main {
     static List<String> readInputData() throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String inputData = reader.readLine();
-//        String inputData = //"A1 D1 POST";
-////                "A1 A2 A3 A4 A5 A6 A7 A8 A9 POST";
-//                "A88 D77 D95 A78 A71 A2 D9 A2 A60 D80 A85 A65 D11 A30 D8 A68 D87 A28 A88 A96 D29 D26 D88 D47 D68 A65 A86 A100 A61 D7 D76 D21 D24 A40 D94 A84 A16 D28 A45 A60 D34 D14 A68 A64 A74 A62 D99 D2 D34 D32 D60 D52 D19 A95 A28 A91 D24 A34 D22 D77 D7 D78 A3 A100 D95 D53 D82 D64 A55 A46 A17 A70 D4 A25 A75 D71 A30 D50 D44 A11 D39 A47 D77 A71 D1 A98 D51 A63 D15 A15 D75 A4 D14 D77 A9 D84 D70 A5 D67 A22 POST";
+//        String inputData = "";
         return Arrays.asList(inputData.split(" "));
     }
 
@@ -611,6 +600,8 @@ public class main {
             } else if (operation.charAt(0) == 'D') {
                 tree.remove(value);
             }
+            tree.postOrder(tree.root);
+            System.out.println();
         }
 
         String traversal = inputs.get(inputs.size() - 1);
@@ -631,6 +622,17 @@ public class main {
     public static void main(String[] args) throws IOException {
         AVLTree tree = new AVLTree();
         List<String> inputData = readInputData();
+//        Arrays.asList("A54", "A99", "D60", "A80", "A28", "D4", "D60", "D62", "A76", "A100",
+//                "A34", "A31", "A29", "A31", "D57", "D59", "D95", "D90", "A46", "A91",
+//                "D44", "D81", "A56", "A2", "A84", "A50", "D59", "A47", "D22", "A49",
+//                "A74", "A59", "A15", "D17", "A44", "D77", "D77", "D90", "A94", "A70",
+//                "D83", "D84", "A21", "D82", "D5", "D1", "D27", "D33", "A60", "A55",
+//                "A38", "A36", "A57", "D14", "A50", "A78", "D84", "D30", "A92", "A48",
+//                "D94", "A3", "D3", "A7", "D34", "A96", "D37", "D68", "A58", "A18",
+//                "A26", "A60", "D69", "D33", "A66", "D17", "D64", "D16", "D10", "A14",
+//                "A78", "A8", "A70", "A31", "D40", "D82", "D71", "A14", "A49", "D64",
+//                "A34", "D99", "A35", "A67", "A14", "D43", "D55", "A10", "D66", "A94",
+//                "POST");
         processInputData(inputData, tree); // 处理输入数据并更新树
     }
 }
