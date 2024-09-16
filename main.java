@@ -613,7 +613,7 @@ public class main {
             }
         }
 
-        String traversal = inputs.getLast();
+        String traversal = inputs.get(inputs.size() - 1);
         if (tree.isEmpty()) {
             System.out.println("EMPTY");
         } else {
