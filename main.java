@@ -1,15 +1,19 @@
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class main {
 
+    public static class Assignment3HashMap {
+        private static final int SIZE = 26; // 26 slots, from 'a' to 'z'
+        private static final String NEVER_USED = "Never Used";
+        private static final String TOMBSTONE = "Tombstone";
+        private static final String OCCUPIED = "Occupied";
+        private final String[] table = new String[SIZE];
+        private final String[] status = new String[SIZE];
 
-    static class assignment3HashTable{
-        private final int size = 26; // 26 slots, from 'a' to 'z'
-        private final String[] table = new String[size];
-        private final String[] status = new String[size]; // "never used", "tombstone", "occupied"
-
-        public assignment3HashTable() {
-            Arrays.fill(status, "never used");
+        public Assignment3HashMap() {
+            Arrays.fill(status, NEVER_USED);
         }
 
         private int hashFunction(String key) {
@@ -19,13 +23,13 @@ public class main {
         public int search(String key) {
             int hashValue = hashFunction(key);
             int index = hashValue;
-            for (int i = 0; i < size; i++) {
-                if ("never used".equals(status[index])) {
-                    return -1; // Key not found
-                } else if ("occupied".equals(status[index]) && key.equals(table[index])) {
+            for (int i = 0; i < SIZE; i++) {
+                if (status[index].equals(NEVER_USED)) {
+                    return -1;
+                } else if (status[index].equals(OCCUPIED) && key.equals(table[index])) {
                     return index; // Key found
                 }
-                index = (index + 1) % size;
+                index = (index + 1) % SIZE;
             }
             return -1; // Key not found
         }
@@ -37,34 +41,32 @@ public class main {
 
             int hashValue = hashFunction(key);
             int index = hashValue;
-            for (int i = 0; i < size; i++) {
-                if (!"occupied".equals(status[index])) {
+            for (int i = 0; i < SIZE; i++) {
+                if (!status[index].equals(OCCUPIED)) {
                     table[index] = key;
-                    status[index] = "occupied";
+                    status[index] = OCCUPIED;
                     return;
                 }
-                index = (index + 1) % size;
+                index = (index + 1) % SIZE;
             }
         }
 
         public void delete(String key) {
             int index = search(key);
             if (index != -1) {
-                status[index] = "tombstone";
+                status[index] = TOMBSTONE;
             }
         }
 
         public String output() {
             StringBuilder result = new StringBuilder();
-            for (int i = 0; i < size; i++) {
-                if ("occupied".equals(status[i])) {
+            for (int i = 0; i < SIZE; i++) {
+                if (status[i].equals(OCCUPIED)) {
                     result.append(table[i]).append(" ");
                 }
             }
             return result.toString().trim();
         }
-
-
     }
 
 
@@ -81,7 +83,7 @@ public class main {
     }
 
     public static void processCommands(String commands) {
-        assignment3HashTable hashTable = new assignment3HashTable();
+        Assignment3HashMap hashTable = new Assignment3HashMap();
         String[] commandList = commands.split(" ");
         for (String command : commandList) {
             if (command.startsWith("A")) {
@@ -92,6 +94,7 @@ public class main {
                 hashTable.delete(key);
             }
         }
-        System.out.println(hashTable.output());
+        System.out.println("==============="+hashTable.output());
     }
+
 }
