@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 
 public class main {
 
@@ -69,36 +70,9 @@ public class main {
         }
     }
 
-    public main () {}
-
-    public main (String commands) {
-        Assignment3HashMap hashTable = new Assignment3HashMap();
-        String[] commandList = commands.split(" ");
-        for (String command : commandList) {
-            if (command.startsWith("A")) {
-                String key = command.substring(1);
-                hashTable.insert(key);
-            } else if (command.startsWith("D")) {
-                String key = command.substring(1);
-                hashTable.delete(key);
-            }
-        }
-    }
-
-
-//    public static void main(String[] args) {
-//        // Sample inputs
-//        String sampleInput1 = "Aaaa Accc Abbb";
-//        String sampleInput2 = "Abba Aaaa Acca";
-//        String sampleInput3 = "Abba Aaaa Acca Daaa";
+//    public main () {}
 //
-//        // Process the sample inputs
-//        processCommands(sampleInput1); // Output: aaa bbb ccc
-//        processCommands(sampleInput2); // Output: bba aaa cca
-//        processCommands(sampleInput3); // Output: bba cca
-//    }
-//
-//    public static void processCommands(String commands) {
+//    public main (String commands) {
 //        Assignment3HashMap hashTable = new Assignment3HashMap();
 //        String[] commandList = commands.split(" ");
 //        for (String command : commandList) {
@@ -110,7 +84,29 @@ public class main {
 //                hashTable.delete(key);
 //            }
 //        }
-//        System.out.println("==============="+hashTable.output());
 //    }
+
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+//        System.out.println("Enter commands: ");
+        String input = scanner.nextLine();
+        processCommands(input);
+    }
+
+    public static void processCommands(String commands) {
+        Assignment3HashMap hashTable = new Assignment3HashMap();
+        String[] commandList = commands.split(" ");
+        for (String command : commandList) {
+            if (command.startsWith("A")) {
+                String key = command.substring(1);
+                hashTable.insert(key);
+            } else if (command.startsWith("D")) {
+                String key = command.substring(1);
+                hashTable.delete(key);
+            }
+        }
+//        System.out.println("==============="+hashTable.output());
+    }
 
 }
