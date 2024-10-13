@@ -106,7 +106,7 @@ public class main {
                 hashTable.delete(key);
             }
         }
-//        System.out.println("==============="+hashTable.output());
+        System.out.println(hashTable.output());
     }
 
 }
